@@ -29,8 +29,8 @@ The backend tests against the hCaptcha test secret.
 
 For production:
 1. Go to https://dashboard.hcaptcha.com → create free account
-2. Add a site → copy your **Site Key**
-3. Copy your **Secret Key** from Account Settings
+2. Add a site → copy your **Site Key**  → `<your-site-key>`
+3. Copy your **Secret Key** from Account Settings  → `<your-secret-key>`
 4. Set `REACT_APP_HCAPTCHA_SITE_KEY=<your-site-key>` in Vercel
 5. Set `HCAPTCHA_SECRET=<your-secret-key>` in Render
 
