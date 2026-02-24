@@ -11,14 +11,19 @@ const { body, validationResult } = require('express-validator');
 const HCAPTCHA_SECRET = process.env.HCAPTCHA_SECRET || '0x0000000000000000000000000000000000000000';
 
 const verifyCaptcha = async (token) => {
-  if (!token) return false;
+  if (!token) {
+    console.log('[hCaptcha] No token provided');
+    return false;
+  }
   try {
     const params = new URLSearchParams();
     params.append('secret', HCAPTCHA_SECRET);
     params.append('response', token);
     const res = await axios.post('https://hcaptcha.com/siteverify', params);
+    console.log('[hCaptcha] Response:', JSON.stringify(res.data));
     return res.data.success === true;
-  } catch {
+  } catch (err) {
+    console.log('[hCaptcha] Error:', err.message);
     return false;
   }
 };
