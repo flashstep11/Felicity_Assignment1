@@ -5,7 +5,7 @@ import api from '../../utils/api';
 import toast from 'react-hot-toast';
 import HCaptcha from '@hcaptcha/react-hcaptcha';
 
-const HCAPTCHA_SITE_KEY = '10000000-ffff-ffff-ffff-000000000001';
+const HCAPTCHA_SITE_KEY = process.env.REACT_APP_HCAPTCHA_SITE_KEY || '10000000-ffff-ffff-ffff-000000000001';
 
 const INTEREST_OPTIONS = [
   'Technical', 'Cultural', 'Sports', 'Music', 'Dance',
@@ -25,8 +25,8 @@ const ChipGrid = ({ options, selected, onToggle, keyProp = null }) => (
           type="button"
           onClick={() => onToggle(key)}
           className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-all flex items-center gap-1 ${active
-              ? 'bg-primary-700 border-primary-500 text-white shadow-md shadow-primary-900/40'
-              : 'bg-dark-200 border-primary-900 text-gray-400 hover:border-primary-600 hover:text-gray-200'
+            ? 'bg-primary-700 border-primary-500 text-white shadow-md shadow-primary-900/40'
+            : 'bg-dark-200 border-primary-900 text-gray-400 hover:border-primary-600 hover:text-gray-200'
             }`}
         >
           {active && <span className="text-xs">✓</span>}
