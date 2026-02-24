@@ -1,413 +1,142 @@
-# Felicity Event Management System
+# Felicity — Event Management System
 
-A comprehensive full-stack event management system built with the MERN stack (MongoDB, Express.js, React, Node.js).
 
-## 📋 Features
+**Live Frontend:** https://felicity-assignment1.vercel.app/  
+**Backend API:** https://felicity-assignment1.onrender.com
 
-### User Roles
-- **Participants** (IIIT Students & Non-IIIT)
-- **Organizers** (Clubs/Councils/Fest Teams)
-- **Admin** (System Administrator)
+---
 
-### Core Functionality
-
-#### 🎓 Participant Features
-- **Registration & Authentication**
-  - IIIT students register with @iiit.ac.in email
-  - Non-IIIT participants with email and password
-  - Email domain validation for IIIT students
-  
-- **Event Management**
-  - Browse all published events with search and filters
-  - View trending events (Top 5 in last 24h)
-  - Filter by event type, eligibility, date range, tags
-  - View complete event details
-  - Register for events with custom forms
-  - View registration status and QR codes
-  
-- **Dashboard**
-  - Upcoming events
-  - Past events history
-  - Completed events
-  - Registration tickets with QR codes
-  
-- **Clubs & Organizers**
-  - Browse all approved organizers
-  - Follow/unfollow organizers
-  - View organizer details and events
-  
-- **Profile Management**
-  - Edit profile information
-  - Change password
-  - Manage preferences
-
-#### 🏢 Organizer Features
-- **Event Creation & Management**
-  - Create events as drafts
-  - Define required fields (Section 8)
-  - Custom registration forms with dynamic form builder
-  - Merchandise events with stock management
-  - Publish events (auto-post to Discord)
-  - Edit event details (draft/ongoing/completed states)
-  
-- **Dashboard**
-  - Events carousel with status indicators
-  - Analytics: registrations, revenue, attendance
-  - View all created events
-  
-- **Participant Management**
-  - View registered participants
-  - Search and filter participants
-  - Export participant list as CSV
-  - View individual registration details
-  
-- **Profile**
-  - Edit organizer information
-  - Configure Discord webhook for auto-posting events
-  - Manage contact details
-
-#### ⚙️ Admin Features
-- **Club/Organizer Management**
-  - Create new organizer accounts
-  - Auto-generate login credentials
-  - System shares credentials with organizer
-  - Disable/restore organizer accounts
-  - Cannot delete (option to archive)
-  
-- **Password Reset Requests**
-  - View all pending password reset requests
-  - Approve/reject requests
-  - Generate new passwords
-  - System sends new password to users
-  
-- **Dashboard**
-  - System-wide statistics
-  - Total participants, organizers, events
-  - Pending password reset requests
-
-### 🔐 Security Features
-- Passwords hashed using bcrypt (no plaintext storage)
-- JWT-based authentication for all protected routes
-- Role-based access control
-- Session management with persistent sessions
-- Logout clears all authentication tokens
-- Protected routes require authentication
-- Email domain validation for IIIT students
-
-### 📧 Event Registration Workflows
-- **Normal Events**
-  - Custom registration form
-  - Email confirmation with event details
-  - QR code ticket generation
-  - Team name support
-  
-- **Merchandise Events**
-  - Stock management
-  - Purchase limit per participant
-  - Order confirmation email
-  - QR code for pickup
-
-### 🎨 User Interface
-- Clean, modern design with Tailwind CSS
-- Responsive layout (mobile, tablet, desktop)
-- Role-specific navigation menus
-- Real-time toast notifications
-- Loading states and error handling
-- Form validation
-
-## 🛠️ Technology Stack
-
-### Backend
-- **Node.js** - Runtime environment
-- **Express.js** - Web framework
-- **MongoDB** - Database
-- **Mongoose** - ODM
-- **bcrypt** - Password hashing
-- **jsonwebtoken** - JWT authentication
-- **nodemailer** - Email service
-- **qrcode** - QR code generation
-- **axios** - HTTP client for Discord webhook
-- **validator** - Email validation
+## Tech Stack & Justification
 
 ### Frontend
-- **React** - UI library
-- **React Router** - Routing
-- **Axios** - API client
-- **Tailwind CSS** - Styling
-- **React Hot Toast** - Notifications
-- **React Icons** - Icon library
-- **date-fns** - Date formatting
+| Library | Version | Why |
+|---|---|---|
+| **React** | 18 | Component-driven UI; hooks make state management clean for complex forms and real-time updates |
+| **React Router DOM** | 6 | Declarative client-side routing with nested routes and protected paths |
+| **Tailwind CSS** | 3 | Utility-first CSS eliminates context-switching; dark theme and responsive grid trivially easy |
+| **Axios** | 1.6 | Promise-based HTTP with interceptors for automatic JWT header injection |
+| **socket.io-client** | 4.6 | WebSocket client for team chat; matches the socket.io server |
+| **React Hot Toast** | 2.4 | Lightweight non-blocking notifications; better UX than `alert()` |
+| **date-fns** | 2.30 | Tree-shakeable date formatting; far smaller than moment.js |
+| **React Icons** | 4.12 | Single import for Feather/Font Awesome icons without full icon font overhead |
+| **html5-qrcode** | 2.3 | Browser-native QR scanning using camera; no native app required |
+| **@headlessui/react** | 1.7 | Unstyled accessible UI primitives (modals, transitions) that work with Tailwind |
+| **@hcaptcha/react-hcaptcha** | 2 | Drop-in CAPTCHA widget; GDPR-friendlier than reCAPTCHA |
 
-## 📁 Project Structure
+### Backend
+| Library | Version | Why |
+|---|---|---|
+| **Express** | 4 | Minimal, well-understood HTTP framework; middleware model fits auth/validation pipeline |
+| **Mongoose** | 8 | Schema validation + rich query API on top of MongoDB; subdocuments model registrations naturally |
+| **jsonwebtoken** | 9 | Stateless JWT auth; no session store needed for horizontal scaling |
+| **bcrypt** | 5 | Battle-tested password hashing; async API keeps event loop unblocked |
+| **express-validator** | 7 | Declarative input validation middleware; keeps route handlers clean |
+| **axios** | 1.6 | Used server-side to call hCaptcha verify and Discord webhook APIs |
+| **socket.io** | 4.6 | WebSocket abstraction with automatic fallback; used for team event chat |
+| **qrcode** | 1.5 | Generates QR code data URLs server-side at registration time; no client dependency |
+| **nodemailer** | 6.9 | Sends password-reset emails; transport-agnostic so SMTP provider is swappable |
+| **multer** | 2 | Handles multipart file uploads (payment proof, event image) |
+| **validator** | 13 | Extra string validation (email format, URL checks) beyond express-validator |
+| **cors** | 2 | Fine-grained CORS policy for Vercel → Render cross-origin requests |
+| **dotenv** | 16 | Twelve-factor app config; keeps secrets out of source |
 
-```
-assignment-1/
-├── backend/
-│   ├── models/
-│   │   ├── Admin.js
-│   │   ├── Participant.js
-│   │   ├── Organizer.js
-│   │   ├── Event.js
-│   │   └── PasswordResetRequest.js
-│   ├── routes/
-│   │   ├── auth.js
-│   │   ├── participant.js
-│   │   ├── organizer.js
-│   │   ├── admin.js
-│   │   └── event.js
-│   ├── middleware/
-│   │   └── auth.js
-│   ├── utils/
-│   │   ├── createAdmin.js
-│   │   ├── emailService.js
-│   │   ├── discordWebhook.js
-│   │   └── qrGenerator.js
-│   ├── server.js
-│   ├── package.json
-│   └── .env.example
-├── frontend/
-│   ├── public/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── Navbar.js
-│   │   │   └── PrivateRoute.js
-│   │   ├── context/
-│   │   │   └── AuthContext.js
-│   │   ├── pages/
-│   │   │   ├── auth/
-│   │   │   ├── participant/
-│   │   │   ├── organizer/
-│   │   │   └── admin/
-│   │   ├── utils/
-│   │   │   └── api.js
-│   │   ├── App.js
-│   │   └── index.js
-│   ├── package.json
-│   └── .env.example
-└── deployment.txt
-```
 
-## 🚀 Installation & Setup
+---
+
+## Advanced Features
+
+### Tier A — A1: Team Event Registration
+- Participants can create or join a team for any team-enabled event
+- Team leader sets a team name; others join via invite/accept flow
+- Backend enforces `minTeamSize` / `maxTeamSize` per event
+- Team status transitions: `PENDING → COMPLETE` when all seats filled
+- QR code generated per team member; attendance tracked individually
+
+**Design decision:** Teams stored in a separate `Team` collection (not embedded in Event) so member lookups and status updates don't require pulling the full event document.
+
+### Tier A — A3: QR Scanner & Attendance Tracker
+- Organizer opens `/organizer/events/:id/scanner` during the event window
+- `html5-qrcode` accesses the device camera in the browser — no app install
+- Each QR code encodes `{ ticketId, eventId, participantId }` as JSON
+- On successful scan: participant's `registeredEvents.status → COMPLETED`, `paymentStatus → COMPLETED`, and `event.totalRevenue` is incremented by the participant's actual order value
+- Duplicate scan detection prevents double-marking
+- Manual attendance fallback for participants without phones
+- Attendance rate shown live in EventManagement dashboard
+
+**Design decision:** Revenue is updated on scan (not on registration) to ensure only attended/confirmed participants count toward revenue — more accurate for paid events.
+
+### Tier B — B2: Organiser Password Reset Workflow
+- Organizer submits a reset request with a reason from their profile page
+- Request stored in `PasswordResetRequest` collection with `PENDING` status
+- Admin dashboard lists all pending requests and can approve or reject with comments
+- On approval: new random password generated, hashed, saved; email sent to organizer
+- On rejection: rejection email sent with admin's reason
+- Organizer can see their request history (PENDING / APPROVED / REJECTED)
+
+**Design decision:** Admin-gated workflow (not self-service email link) because organizer accounts are created by admins and need the same trust model for password resets.
+
+### Tier B — B3: Team Event Chat
+- Real-time chat room per team event powered by **Socket.io**
+- Messages scoped to `eventId` rooms so teams only see their own channel
+- Participants authenticated via JWT before joining the socket room
+- Messages displayed with sender name and timestamp
+
+### Tier C — C3: Bot Protection (hCaptcha)
+- `@hcaptcha/react-hcaptcha` widget on the participant registration form
+- On submit, the captcha token is sent to the backend with the registration payload
+- Backend calls `https://hcaptcha.com/siteverify` with the token and the server-side secret
+- Registration is rejected if captcha verification fails
+- Uses hCaptcha test keys locally; production keys set via environment variables
+
+**Design decision:** Chose hCaptcha over reCAPTCHA v3 because it is GDPR-compliant by default and does not fingerprint users with invisible scoring.
+
+---
+
+## Local Setup
 
 ### Prerequisites
-- Node.js (v14 or higher)
-- MongoDB Atlas account (or local MongoDB)
-- npm or yarn
+- Node.js ≥ 18
+- MongoDB (local or Atlas connection string)
 
-### Backend Setup
+### 1. Clone & install
+```bash
+git clone https://github.com/flashstep11/Felicity_Assignment1
+cd Felicity_Assignment1
+```
 
-1. Navigate to backend directory:
+### 2. Backend
 ```bash
 cd backend
-```
-
-2. Install dependencies:
-```bash
+cp .env.example .env   # or create .env manually
 npm install
+npm run dev            # starts on port 5000
 ```
 
-3. Create `.env` file from `.env.example`:
-```bash
-cp .env.example .env
+**`backend/.env`**
 ```
-
-4. Update `.env` with your configuration:
-```env
-PORT=5000
-MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_secret_key
+MONGODB_URI=mongodb://localhost:27017/felicity
+JWT_SECRET=your_secret_here
 JWT_EXPIRE=7d
+NODE_ENV=development
 ADMIN_EMAIL=admin@felicity.iiit.ac.in
-ADMIN_PASSWORD=your_admin_password
+ADMIN_PASSWORD=admin123
+HCAPTCHA_SECRET=0x0000000000000000000000000000000000000000
 ```
 
-5. Start the server:
-```bash
-npm start
-# or for development with auto-reload
-npm run dev
-```
-
-Backend will run on `http://localhost:5000`
-
-### Frontend Setup
-
-1. Navigate to frontend directory:
+### 3. Frontend
 ```bash
 cd frontend
-```
-
-2. Install dependencies:
-```bash
 npm install
+npm start              # starts on port 3000
 ```
 
-3. Create `.env` file:
-```bash
-cp .env.example .env
+**`frontend/.env`**
 ```
-
-4. Update `.env`:
-```env
 REACT_APP_API_URL=http://localhost:5000/api
 ```
 
-5. Start the development server:
-```bash
-npm start
-```
+### 4. Seed admin account
+The admin account is auto-created on first backend start using `ADMIN_EMAIL` and `ADMIN_PASSWORD` from `.env`.
 
-Frontend will run on `http://localhost:3000`
-
-## 📝 API Documentation
-
-### Authentication Endpoints
-
-#### Register Participant
-```
-POST /api/auth/register/participant
-Body: {
-  firstName, lastName, email, password, participantType,
-  contactNumber, college, areasOfInterest
-}
-```
-
-#### Login
-```
-POST /api/auth/login
-Body: { email, password }
-```
-
-#### Password Reset Request
-```
-POST /api/auth/password-reset-request
-Body: { email }
-```
-
-### Participant Endpoints
-```
-GET    /api/participant/profile
-PUT    /api/participant/profile
-PUT    /api/participant/change-password
-GET    /api/participant/dashboard
-GET    /api/participant/events
-GET    /api/participant/events/trending
-GET    /api/participant/events/:id
-POST   /api/participant/events/:id/register
-GET    /api/participant/organizers
-POST   /api/participant/organizers/:id/follow
-DELETE /api/participant/organizers/:id/unfollow
-GET    /api/participant/organizers/:id
-```
-
-### Organizer Endpoints
-```
-GET  /api/organizer/profile
-PUT  /api/organizer/profile
-GET  /api/organizer/dashboard
-POST /api/organizer/events
-PUT  /api/organizer/events/:id
-PUT  /api/organizer/events/:id/publish
-GET  /api/organizer/events/:id
-GET  /api/organizer/events/:id/participants/export
-GET  /api/organizer/events-ongoing
-```
-
-### Admin Endpoints
-```
-POST   /api/admin/organizers
-GET    /api/admin/organizers
-DELETE /api/admin/organizers/:id
-PUT    /api/admin/organizers/:id/restore
-GET    /api/admin/password-reset-requests
-PUT    /api/admin/password-reset-requests/:id/approve
-PUT    /api/admin/password-reset-requests/:id/reject
-GET    /api/admin/dashboard
-```
-
-## 🌐 Deployment
-
-### Backend (Render/Railway/Heroku)
-1. Push code to GitHub
-2. Create new Web Service
-3. Connect repository
-4. Set environment variables
-5. Deploy
-
-### Frontend (Vercel/Netlify)
-1. Push code to GitHub
-2. Import project
-3. Set root directory to `frontend`
-4. Set environment variable `REACT_APP_API_URL`
-5. Deploy
-
-### Database (MongoDB Atlas)
-1. Create free cluster
-2. Create database user
-3. Whitelist IP addresses
-4. Get connection string
-5. Update backend .env
-
-## 🧪 Testing
-
-### Test Accounts
-
-**Admin:**
-- Email: admin@felicity.iiit.ac.in
-- Password: (from .env)
-
-**Participant (IIIT):**
-- Register with @iiit.ac.in email
-
-**Participant (Non-IIIT):**
-- Register with any email
-
-**Organizer:**
-- Created by admin
-- Credentials provided by admin
-
-## 🎯 Assignment Requirements Checklist
-
-✅ User Roles (no role switching)
-✅ Authentication & Security (JWT, bcrypt, role-based access)
-✅ IIIT email validation for IIIT students
-✅ Organizer account provisioning by admin
-✅ Password reset workflow
-✅ Session management
-✅ User onboarding (preferences, follow clubs)
-✅ Participant & Organizer data models
-✅ Event types (Normal, Merchandise)
-✅ Event attributes (all required fields)
-✅ Custom registration forms (dynamic form builder)
-✅ Participant navigation menu
-✅ My Events Dashboard (upcoming, history, records)
-✅ Browse Events (search, trending, filters)
-✅ Event details page with blocking logic
-✅ Event registration workflows (email, QR code)
-✅ Profile page (editable, password reset)
-✅ Clubs/Organizers listing (follow/unfollow)
-✅ Organizer detail page
-✅ Organizer navigation menu
-✅ Organizer dashboard (events carousel, analytics)
-✅ Event creation & editing (draft → publish)
-✅ Form builder for custom registration
-✅ Organizer profile (Discord webhook)
-✅ Participants list with CSV export
-✅ Admin navigation menu
-✅ Club/Organizer management
-✅ Password reset request handling
-✅ Deployment configuration
-
-## 📄 License
-
-This project is created for academic purposes (DASS Assignment 1).
-
-## 👥 Contributors
-
-- Your Name - IIIT Hyderabad
-
-## 🙏 Acknowledgments
-
-- Assignment requirements from DASS course
-- MERN stack documentation
-- Open source libraries used in the project
+### 5. Create an organizer
+Log in as admin → **Manage Organizers** → **Create Organizer** → credentials printed to backend console (or emailed in production).
